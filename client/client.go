@@ -3,9 +3,11 @@ package client
 import (
 	"bytes"
 	"encoding/json"
+	"errors"
 	"io"
 	"net/http"
 	"net/url"
+	"strconv"
 
 	"github.com/kubermatic/go-kubermatic/models"
 )
@@ -15,12 +17,14 @@ const (
 	projectPath string = "/projects"
 )
 
+// Client holds all config and the http.Client needed to talk to the Kubermatic API
 type Client struct {
 	BaseURL    *url.URL
 	httpClient *http.Client
 	token      string
 }
 
+// NewClient creates a new Client for the Kubermatic API
 func NewClient(baseurl string, token string) (*Client, error) {
 	parsedurl, err := url.Parse(baseurl)
 	if err != nil {
@@ -37,8 +41,30 @@ func NewClient(baseurl string, token string) (*Client, error) {
 	return client, nil
 }
 
+// ListProjects lists all projects a user has permission to see
 func (c *Client) ListProjects() ([]*models.Project, error) {
-	return []*models.Project{}, nil
+	req, err := c.newRequest("GET", projectPath, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	var result []*models.Project
+
+	resp, err := c.do(req, result)
+	if err != nil {
+		return nil, err
+	}
+
+	// StatusCodes 401 and 409 mean empty response and should be treated as such
+	if resp.StatusCode == 401 || resp.StatusCode == 409 {
+		return nil, nil
+	}
+
+	if resp.StatusCode >= 299 {
+		return nil, errors.New("Got non-2xx return code: " + strconv.Itoa(resp.StatusCode))
+	}
+
+	return result, nil
 }
 
 func (c *Client) do(req *http.Request, v interface{}) (*http.Response, error) {

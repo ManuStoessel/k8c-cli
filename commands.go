@@ -8,22 +8,16 @@ import (
 
 var actionSubCommands = []*cli.Command{
 	{
-		Name:    "create",
-		Aliases: []string{"add"},
-		Usage:   "create a new resource",
-		Action: func(c *cli.Context) error {
-			fmt.Println("added resource: ", c.Args().First())
-			return nil
-		},
+		Name:        "create",
+		Aliases:     []string{"add"},
+		Usage:       "create a new resource",
+		Subcommands: resourceSubCommands,
 	},
 	{
-		Name:    "get",
-		Aliases: []string{"fetch", "retrieve"},
-		Usage:   "retrieve resources",
-		Action: func(c *cli.Context) error {
-			fmt.Println("fetched resource: ", c.Args().First())
-			return nil
-		},
+		Name:        "get",
+		Aliases:     []string{"fetch", "list"},
+		Usage:       "lists resources of a given type",
+		Subcommands: resourceSubCommands,
 	},
 	{
 		Name:        "delete",
@@ -35,16 +29,16 @@ var actionSubCommands = []*cli.Command{
 
 var resourceSubCommands = []*cli.Command{
 	{
-		Name:  "project",
-		Usage: "a project resource",
+		Name:  "projects",
+		Usage: "project resource type",
 		Action: func(c *cli.Context) error {
 			fmt.Println("project deleted: ", c.Args().First())
 			return nil
 		},
 	},
 	{
-		Name:  "cluster",
-		Usage: "a cluster resource",
+		Name:  "clusters",
+		Usage: "cluster resource type",
 		Action: func(c *cli.Context) error {
 			fmt.Println("cluster deleted: ", c.Args().First())
 			return nil
