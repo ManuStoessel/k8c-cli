@@ -12,6 +12,21 @@ func main() {
 		Commands: actionSubCommands,
 	}
 
+	app.Flags = []cli.Flag{
+		&cli.StringFlag{
+			Name:     "url",
+			Value:    "",
+			Usage:    "Base URL for the Kubermatic API",
+			Required: true,
+		},
+		&cli.StringFlag{
+			Name:     "token",
+			Value:    "",
+			Usage:    "Bearer token for authentication with the Kubermatic API",
+			Required: true,
+		},
+	}
+
 	err := app.Run(os.Args)
 	if err != nil {
 		log.Fatal(err)

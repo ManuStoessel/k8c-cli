@@ -14,7 +14,7 @@ import (
 
 const (
 	apiV1Path   string = "/api/v1"
-	projectPath string = "/projects"
+	projectPath string = apiV1Path + "/projects"
 )
 
 // Client holds all config and the http.Client needed to talk to the Kubermatic API

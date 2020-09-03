@@ -1,8 +1,6 @@
 package main
 
 import (
-	"fmt"
-
 	"github.com/urfave/cli/v2"
 )
 
@@ -29,19 +27,13 @@ var actionSubCommands = []*cli.Command{
 
 var resourceSubCommands = []*cli.Command{
 	{
-		Name:  "projects",
-		Usage: "project resource type",
-		Action: func(c *cli.Context) error {
-			fmt.Println("project deleted: ", c.Args().First())
-			return nil
-		},
+		Name:   "projects",
+		Usage:  "project resource type",
+		Action: actionEntry,
 	},
 	{
-		Name:  "clusters",
-		Usage: "cluster resource type",
-		Action: func(c *cli.Context) error {
-			fmt.Println("cluster deleted: ", c.Args().First())
-			return nil
-		},
+		Name:   "clusters",
+		Usage:  "cluster resource type",
+		Action: actionEntry,
 	},
 }
