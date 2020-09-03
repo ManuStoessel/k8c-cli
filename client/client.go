@@ -14,7 +14,7 @@ import (
 
 const (
 	apiV1Path   string = "/api/v1"
-	projectPath string = apiV1Path + "/projects"
+	projectPath string = ".." + apiV1Path + "/projects"
 )
 
 // Client holds all config and the http.Client needed to talk to the Kubermatic API
@@ -26,7 +26,7 @@ type Client struct {
 
 // NewClient creates a new Client for the Kubermatic API
 func NewClient(baseurl string, token string) (*Client, error) {
-	parsedurl, err := url.Parse(baseurl)
+	parsedurl, err := url.Parse(baseurl + apiV1Path)
 	if err != nil {
 		return &Client{}, err
 	}
