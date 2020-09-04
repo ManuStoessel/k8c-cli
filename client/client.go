@@ -4,7 +4,9 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
+	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
@@ -42,13 +44,13 @@ func NewClient(baseurl string, token string) (*Client, error) {
 }
 
 // ListProjects lists all projects a user has permission to see
-func (c *Client) ListProjects() ([]*models.Project, error) {
+func (c *Client) ListProjects() ([]models.Project, error) {
 	req, err := c.newRequest("GET", projectPath, nil)
 	if err != nil {
 		return nil, err
 	}
 
-	var result []*models.Project
+	var result []models.Project
 
 	resp, err := c.do(req, result)
 	if err != nil {
@@ -73,7 +75,15 @@ func (c *Client) do(req *http.Request, v interface{}) (*http.Response, error) {
 		return nil, err
 	}
 	defer resp.Body.Close()
-	err = json.NewDecoder(resp.Body).Decode(v)
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	fmt.Println(string(body))
+	err = json.Unmarshal(body, &v)
+
 	return resp, err
 }
 
