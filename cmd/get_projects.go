@@ -18,7 +18,11 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"strconv"
 
+	"github.com/ManuStoessel/k8c-cli/client"
+	"github.com/jedib0t/go-pretty/table"
 	"github.com/spf13/cobra"
 )
 
@@ -27,7 +31,34 @@ var getProjectsCmd = &cobra.Command{
 	Use:   "projects",
 	Short: "Lists projects or fetches a specific named project.",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("projects called")
+		//fmt.Println("projects called")
+		k8client, err := client.NewClient("https://run.lab.kubermatic.io", "atokenthatissupersecure")
+		if err != nil {
+			fmt.Println("Could not initialize Kubermatic API client.")
+			return
+		}
+
+		projects, err := k8client.ListProjects()
+		if err != nil {
+			fmt.Println("Error fetching projects.")
+			return
+		}
+
+		//fmt.Printf("Projects: %+v\n", projects)
+
+		t := table.NewWriter()
+		t.SetOutputMirror(os.Stdout)
+		t.SetStyle(table.StyleBold)
+		t.AppendHeader(table.Row{"ID", "Name", "Clusters", "Status", "Created"})
+
+		rows := make([]table.Row, len(projects))
+
+		for i, p := range projects {
+			rows[i] = table.Row{p.ID, p.Name, strconv.FormatInt(p.ClustersNumber, 10), p.Status, p.CreationTimestamp}
+		}
+		t.AppendRows(rows)
+
+		t.Render()
 	},
 }
 

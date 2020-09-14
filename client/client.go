@@ -20,7 +20,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
@@ -66,9 +65,9 @@ func (c *Client) ListProjects() ([]models.Project, error) {
 		return nil, err
 	}
 
-	var result []models.Project
+	result := make([]models.Project, 0)
 
-	resp, err := c.do(req, result)
+	resp, err := c.do(req, &result)
 	if err != nil {
 		return nil, err
 	}
@@ -97,7 +96,7 @@ func (c *Client) do(req *http.Request, v interface{}) (*http.Response, error) {
 		return nil, err
 	}
 
-	fmt.Println(string(body))
+	//fmt.Println(string(body))
 	err = json.Unmarshal(body, &v)
 
 	return resp, err
