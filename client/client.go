@@ -59,10 +59,16 @@ func NewClient(baseurl string, token string) (*Client, error) {
 }
 
 // ListProjects lists all projects a user has permission to see
-func (c *Client) ListProjects() ([]models.Project, error) {
+func (c *Client) ListProjects(listall bool) ([]models.Project, error) {
 	req, err := c.newRequest("GET", projectPath, nil)
 	if err != nil {
 		return nil, err
+	}
+
+	if listall {
+		params := req.URL.Query()
+		params.Add("displayAll", "true")
+		req.URL.RawQuery = params.Encode()
 	}
 
 	result := make([]models.Project, 0)

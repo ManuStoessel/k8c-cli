@@ -27,6 +27,8 @@ import (
 )
 
 var cfgFile string
+var apiToken string
+var baseURL string
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -55,6 +57,8 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.k8c-cli.yaml)")
+	rootCmd.PersistentFlags().StringVarP(&apiToken, "token", "t", "", "API token for authenticating with Kubermatic API.")
+	rootCmd.PersistentFlags().StringVarP(&baseURL, "url", "u", "", "URL of the Kubermatic API including scheme.")
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
