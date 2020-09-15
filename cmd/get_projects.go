@@ -17,6 +17,7 @@ limitations under the License.
 package cmd
 
 import (
+	"encoding/json"
 	"fmt"
 	"os"
 	"strconv"
@@ -49,7 +50,13 @@ var getProjectsCmd = &cobra.Command{
 		//fmt.Printf("Projects: %+v\n", projects)
 
 		if jsonOutput {
-			//TODO
+			output, err := json.Marshal(projects)
+			if err != nil {
+				fmt.Println("Could not marshal projects as JSON.")
+				return
+			}
+
+			fmt.Fprintf(os.Stdout, "%s\n", output)
 		} else {
 			t := table.NewWriter()
 			t.SetOutputMirror(os.Stdout)
