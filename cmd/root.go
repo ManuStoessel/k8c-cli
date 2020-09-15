@@ -29,6 +29,7 @@ import (
 var cfgFile string
 var apiToken string
 var baseURL string
+var jsonOutput bool
 
 // rootCmd represents the base command when called without any subcommands
 var rootCmd = &cobra.Command{
@@ -63,6 +64,9 @@ func init() {
 
 	rootCmd.PersistentFlags().StringVarP(&baseURL, "url", "u", "", "URL of the Kubermatic API including scheme.")
 	viper.BindPFlag("url", rootCmd.PersistentFlags().Lookup("url"))
+
+	rootCmd.PersistentFlags().BoolVarP(&jsonOutput, "json", "o", false, "formats output as JSON")
+	viper.BindPFlag("json", rootCmd.PersistentFlags().Lookup("json"))
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
