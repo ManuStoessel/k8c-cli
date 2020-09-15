@@ -24,10 +24,13 @@ import (
 )
 
 const (
-	projectPath string = ".." + apiV1Path + "/projects"
+	projectPath  string = ".." + apiV1Path + "/projects"
+	clustersPath string = "/clusters"
 )
 
 // ListProjects lists all projects a user has permission to see
+// if listall is true, all projects the user has access to, will be listed
+// if listall is false (default), only clusters owned by the user will be listed
 func (c *Client) ListProjects(listall bool) ([]models.Project, error) {
 	req, err := c.newRequest("GET", projectPath, nil)
 	if err != nil {
@@ -49,6 +52,32 @@ func (c *Client) ListProjects(listall bool) ([]models.Project, error) {
 
 	// StatusCodes 401 and 409 mean empty response and should be treated as such
 	if resp.StatusCode == 401 || resp.StatusCode == 409 {
+		return nil, nil
+	}
+
+	if resp.StatusCode >= 299 {
+		return nil, errors.New("Got non-2xx return code: " + strconv.Itoa(resp.StatusCode))
+	}
+
+	return result, nil
+}
+
+// ListClusters lists all clusters for a given Project (identified by ID)
+func (c *Client) ListClusters(projectID string) ([]models.Cluster, error) {
+	req, err := c.newRequest("GET", projectPath+projectID+clustersPath, nil)
+	if err != nil {
+		return nil, err
+	}
+
+	result := make([]models.Cluster, 0)
+
+	resp, err := c.do(req, &result)
+	if err != nil {
+		return nil, err
+	}
+
+	// StatusCodes 401 and 403 mean empty response and should be treated as such
+	if resp.StatusCode == 401 || resp.StatusCode == 403 {
 		return nil, nil
 	}
 

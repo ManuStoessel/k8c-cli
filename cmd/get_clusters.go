@@ -19,28 +19,37 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/ManuStoessel/k8c-cli/client"
 	"github.com/spf13/cobra"
 )
+
+var pID string
 
 // clustersCmd represents the clusters command
 var getClustersCmd = &cobra.Command{
 	Use:   "clusters",
 	Short: "Lists clusters for a given project.",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("clusters called")
+		//fmt.Println("clusters called")
+		k8client, err := client.NewClient(baseURL, apiToken)
+		if err != nil {
+			fmt.Println("Could not initialize Kubermatic API client.")
+			return
+		}
+
+		clusters, err := k8client.ListClusters(pID)
+		if err != nil {
+			fmt.Println("Error fetching clusters.")
+			return
+		}
+
+		//TODO: output as list and json
+		fmt.Printf("%+v", clusters)
 	},
 }
 
 func init() {
 	getCmd.AddCommand(getClustersCmd)
 
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// clustersCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// clustersCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+	getProjectsCmd.Flags().StringVarP(&pID, "projectID", "p", "", "ID of the project to list clusters for.")
 }
