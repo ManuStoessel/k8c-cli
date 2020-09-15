@@ -32,7 +32,7 @@ var listAll bool
 // projectsCmd represents the projects command
 var getProjectsCmd = &cobra.Command{
 	Use:   "projects",
-	Short: "Lists projects or fetches a specific named project.",
+	Short: "Lists projects.",
 	Run: func(cmd *cobra.Command, args []string) {
 		//fmt.Println("projects called")
 		k8client, err := client.NewClient(baseURL, apiToken)
@@ -77,16 +77,6 @@ var getProjectsCmd = &cobra.Command{
 
 func init() {
 	getCmd.AddCommand(getProjectsCmd)
-
-	// Here you will define your flags and configuration settings.
-
-	// Cobra supports Persistent Flags which will work for this command
-	// and all subcommands, e.g.:
-	// projectsCmd.PersistentFlags().String("foo", "", "A help for foo")
-
-	// Cobra supports local flags which will only run when this command
-	// is called directly, e.g.:
-	// projectsCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 
 	getProjectsCmd.Flags().BoolVarP(&listAll, "listAll", "A", false, "Display all projects the users is allowed to see.")
 }

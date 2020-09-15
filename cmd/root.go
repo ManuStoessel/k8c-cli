@@ -53,10 +53,6 @@ func Execute() {
 func init() {
 	cobra.OnInitialize(initConfig)
 
-	// Here you will define your flags and configuration settings.
-	// Cobra supports persistent flags, which, if defined here,
-	// will be global for your application.
-
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.k8c-cli.yaml)")
 
 	rootCmd.PersistentFlags().StringVarP(&apiToken, "token", "t", "", "API token for authenticating with Kubermatic API.")
@@ -67,10 +63,6 @@ func init() {
 
 	rootCmd.PersistentFlags().BoolVarP(&jsonOutput, "json", "o", false, "formats output as JSON")
 	viper.BindPFlag("json", rootCmd.PersistentFlags().Lookup("json"))
-
-	// Cobra also supports local flags, which will only run
-	// when this action is called directly.
-	//rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
 }
 
 // initConfig reads in config file and ENV variables if set.
