@@ -17,13 +17,9 @@ limitations under the License.
 package cmd
 
 import (
-	"encoding/json"
 	"fmt"
-	"os"
-	"strconv"
 
 	"github.com/ManuStoessel/k8c-cli/client"
-	"github.com/jedib0t/go-pretty/table"
 	"github.com/spf13/cobra"
 )
 
@@ -49,29 +45,7 @@ var getProjectsCmd = &cobra.Command{
 
 		//fmt.Printf("Projects: %+v\n", projects)
 
-		if jsonOutput {
-			output, err := json.Marshal(projects)
-			if err != nil {
-				fmt.Println("Could not marshal projects as JSON.")
-				return
-			}
-
-			fmt.Fprintf(os.Stdout, "%s\n", output)
-		} else {
-			t := table.NewWriter()
-			t.SetOutputMirror(os.Stdout)
-			t.SetStyle(table.StyleBold)
-			t.AppendHeader(table.Row{"ID", "Name", "Clusters", "Status", "Created"})
-
-			rows := make([]table.Row, len(projects))
-
-			for i, p := range projects {
-				rows[i] = table.Row{p.ID, p.Name, strconv.FormatInt(p.ClustersNumber, 10), p.Status, p.CreationTimestamp}
-			}
-			t.AppendRows(rows)
-
-			t.Render()
-		}
+		renderProjectList(projects)
 	},
 }
 
