@@ -57,8 +57,12 @@ func init() {
 	// will be global for your application.
 
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "config file (default is $HOME/.k8c-cli.yaml)")
+
 	rootCmd.PersistentFlags().StringVarP(&apiToken, "token", "t", "", "API token for authenticating with Kubermatic API.")
+	viper.BindPFlag("token", rootCmd.PersistentFlags().Lookup("token"))
+
 	rootCmd.PersistentFlags().StringVarP(&baseURL, "url", "u", "", "URL of the Kubermatic API including scheme.")
+	viper.BindPFlag("url", rootCmd.PersistentFlags().Lookup("url"))
 
 	// Cobra also supports local flags, which will only run
 	// when this action is called directly.
