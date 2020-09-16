@@ -62,6 +62,37 @@ func (c *Client) ListProjects(listall bool) ([]models.Project, error) {
 	return result, nil
 }
 
+// CreateProject creates a new project with the given name and labels
+func (c *Client) CreateProject(name string, labels map[string]string) (models.Project, error) {
+	newProject := models.Project{
+		Name:   name,
+		Labels: labels,
+	}
+
+	req, err := c.newRequest("POST", projectPath, newProject)
+	if err != nil {
+		return models.Project{}, err
+	}
+
+	result := models.Project{}
+
+	resp, err := c.do(req, &result)
+	if err != nil {
+		return models.Project{}, err
+	}
+
+	// StatusCodes 401 and 409 mean empty response and should be treated as such
+	if resp.StatusCode == 401 || resp.StatusCode == 409 {
+		return models.Project{}, nil
+	}
+
+	if resp.StatusCode >= 299 {
+		return models.Project{}, errors.New("Got non-2xx return code: " + strconv.Itoa(resp.StatusCode))
+	}
+
+	return result, nil
+}
+
 // ListClusters lists all clusters for a given Project (identified by ID)
 func (c *Client) ListClusters(projectID string) ([]models.Cluster, error) {
 	req, err := c.newRequest("GET", projectPath+"/"+projectID+clustersPath, nil)
