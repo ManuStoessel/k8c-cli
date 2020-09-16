@@ -19,6 +19,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/ManuStoessel/k8c-cli/client"
 	"github.com/spf13/cobra"
 )
 
@@ -27,7 +28,19 @@ var deleteProjectCmd = &cobra.Command{
 	Use:   "project [id]",
 	Short: "Lets you delete a project",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("project called")
+		k8client, err := client.NewClient(baseURL, apiToken)
+		if err != nil {
+			fmt.Println("Could not initialize Kubermatic API client.")
+			return
+		}
+
+		err = k8client.DeleteProject(args[0])
+		if err != nil {
+			fmt.Printf("Error deleting project %s.\n", args[0])
+			return
+		}
+
+		fmt.Printf("Successfully deleted project with ID %s", args[0])
 	},
 }
 
