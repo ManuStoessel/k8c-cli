@@ -60,10 +60,10 @@ func renderClusterList(clusters []models.Cluster) {
 		t := table.NewWriter()
 		t.SetOutputMirror(os.Stdout)
 		t.SetStyle(table.StyleBold)
-		t.AppendHeader(table.Row{"ID", "Name", "Version", "Created"})
+		t.AppendHeader(table.Row{"ID", "Name", "Type", "Version", "Created"})
 		rows := make([]table.Row, len(clusters))
 		for i, c := range clusters {
-			rows[i] = table.Row{c.ID, c.Name, c.Status.Version, c.CreationTimestamp}
+			rows[i] = table.Row{c.ID, c.Name, c.Type, c.Status.Version, c.CreationTimestamp}
 		}
 		t.AppendRows(rows)
 		t.Render()
