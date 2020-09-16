@@ -53,6 +53,23 @@ func renderProjectList(projects []models.Project) {
 	}
 }
 
+func renderDatacenterList(datacenters []models.Datacenter) {
+	if jsonOutput {
+		renderJSON(datacenters)
+	} else {
+		t := table.NewWriter()
+		t.SetOutputMirror(os.Stdout)
+		t.SetStyle(table.StyleBold)
+		t.AppendHeader(table.Row{"Name", "Country"})
+		rows := make([]table.Row, len(datacenters))
+		for i, dc := range datacenters {
+			rows[i] = table.Row{dc.Metadata.Name, dc.Spec.Country}
+		}
+		t.AppendRows(rows)
+		t.Render()
+	}
+}
+
 func renderClusterList(clusters []models.Cluster) {
 	if jsonOutput {
 		renderJSON(clusters)

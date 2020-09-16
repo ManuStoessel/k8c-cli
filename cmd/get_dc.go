@@ -19,6 +19,7 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/ManuStoessel/k8c-cli/client"
 	"github.com/spf13/cobra"
 )
 
@@ -27,7 +28,19 @@ var getDcCmd = &cobra.Command{
 	Use:   "dc",
 	Short: "List all available datacenters.",
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("dc called")
+		k8client, err := client.NewClient(baseURL, apiToken)
+		if err != nil {
+			fmt.Println("Could not initialize Kubermatic API client.")
+			return
+		}
+
+		datacenters, err := k8client.ListDatacenters()
+		if err != nil {
+			fmt.Println("Error fetching datacenterss.")
+			return
+		}
+
+		renderDatacenterList(datacenters)
 	},
 }
 
