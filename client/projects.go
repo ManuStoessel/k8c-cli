@@ -93,6 +93,30 @@ func (c *Client) CreateProject(name string, labels map[string]string) (models.Pr
 	return result, nil
 }
 
+// DeleteProject deletes a project identified by id
+func (c *Client) DeleteProject(projectID string) error {
+	req, err := c.newRequest("DELETE", projectPath+"/"+projectID, nil)
+	if err != nil {
+		return err
+	}
+
+	resp, err := c.do(req, nil)
+	if err != nil {
+		return err
+	}
+
+	// StatusCodes 401 and 403 mean empty response and should be treated as such
+	if resp.StatusCode == 401 || resp.StatusCode == 403 {
+		return nil
+	}
+
+	if resp.StatusCode >= 299 {
+		return errors.New("Got non-2xx return code: " + strconv.Itoa(resp.StatusCode))
+	}
+
+	return nil
+}
+
 // ListClusters lists all clusters for a given Project (identified by ID)
 func (c *Client) ListClusters(projectID string) ([]models.Cluster, error) {
 	req, err := c.newRequest("GET", projectPath+"/"+projectID+clustersPath, nil)
