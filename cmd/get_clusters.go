@@ -43,13 +43,13 @@ var getClustersCmd = &cobra.Command{
 			return
 		}
 
-		//TODO: output as list and json
-		fmt.Printf("%+v", clusters)
+		//fmt.Printf("%+v", clusters)
+		renderClusterList(clusters)
 	},
 }
 
 func init() {
 	getCmd.AddCommand(getClustersCmd)
 
-	getProjectsCmd.Flags().StringVarP(&pID, "projectID", "p", "", "ID of the project to list clusters for.")
+	getClustersCmd.Flags().StringVarP(&pID, "projectID", "p", "", "ID of the project to list clusters for.")
 }

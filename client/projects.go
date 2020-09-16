@@ -64,7 +64,7 @@ func (c *Client) ListProjects(listall bool) ([]models.Project, error) {
 
 // ListClusters lists all clusters for a given Project (identified by ID)
 func (c *Client) ListClusters(projectID string) ([]models.Cluster, error) {
-	req, err := c.newRequest("GET", projectPath+projectID+clustersPath, nil)
+	req, err := c.newRequest("GET", projectPath+"/"+projectID+clustersPath, nil)
 	if err != nil {
 		return nil, err
 	}
