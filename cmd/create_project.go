@@ -19,15 +19,33 @@ package cmd
 import (
 	"fmt"
 
+	"github.com/ManuStoessel/k8c-cli/client"
+	"github.com/kubermatic/go-kubermatic/models"
 	"github.com/spf13/cobra"
 )
 
 // projectCmd represents the project command
 var createProjectCmd = &cobra.Command{
-	Use:   "project",
+	Use:   "project [name]",
 	Short: "Lets you create a new project",
+	Args:  cobra.ExactArgs(1),
 	Run: func(cmd *cobra.Command, args []string) {
-		fmt.Println("project called")
+		k8client, err := client.NewClient(baseURL, apiToken)
+		if err != nil {
+			fmt.Println("Could not initialize Kubermatic API client.")
+			return
+		}
+
+		//TODO: find a nice way to create a labeled project
+		project, err := k8client.CreateProject(args[0], nil)
+		if err != nil {
+			fmt.Println("Error fetching projects.")
+			return
+		}
+
+		projects := make([]models.Project, 1)
+		projects[0] = project
+		renderProjectList(projects)
 	},
 }
 
