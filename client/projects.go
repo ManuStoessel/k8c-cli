@@ -145,9 +145,9 @@ func (c *Client) ListClustersForProject(projectID string) ([]models.Cluster, err
 }
 
 // ListClustersForProjectAndDatacenter lists all clusters for a given Project
-// (identified by ID) and Datacenter (identified by name)
-func (c *Client) ListClustersForProjectAndDatacenter(projectID string, dc string) ([]models.Cluster, error) {
-	req, err := c.newRequest("GET", projectPath+"/"+projectID+datacenterSubPath+"/"+dc+clustersSubPath, nil)
+// (identified by ID) and Seed (identified by name)
+func (c *Client) ListClustersForProjectAndDatacenter(projectID string, seed string) ([]models.Cluster, error) {
+	req, err := c.newRequest("GET", projectPath+"/"+projectID+datacenterSubPath+"/"+seed+clustersSubPath, nil)
 	if err != nil {
 		return nil, err
 	}

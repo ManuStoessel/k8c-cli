@@ -20,10 +20,12 @@ import (
 	"fmt"
 
 	"github.com/ManuStoessel/k8c-cli/client"
+	"github.com/kubermatic/go-kubermatic/models"
 	"github.com/spf13/cobra"
 )
 
 var pID string
+var seed string
 
 // clustersCmd represents the clusters command
 var getClustersCmd = &cobra.Command{
@@ -37,10 +39,20 @@ var getClustersCmd = &cobra.Command{
 			return
 		}
 
-		clusters, err := k8client.ListClustersForProject(pID)
-		if err != nil {
-			fmt.Println("Error fetching clusters.")
-			return
+		var clusters []models.Cluster
+
+		if cmd.Flags().Changed("dc") {
+			clusters, err = k8client.ListClustersForProjectAndDatacenter(pID, seed)
+			if err != nil {
+				fmt.Printf("Error fetching clusters: %s", err)
+				return
+			}
+		} else {
+			clusters, err = k8client.ListClustersForProject(pID)
+			if err != nil {
+				fmt.Printf("Error fetching clusters: %s", err)
+				return
+			}
 		}
 
 		//fmt.Printf("%+v", clusters)
@@ -52,4 +64,7 @@ func init() {
 	getCmd.AddCommand(getClustersCmd)
 
 	getClustersCmd.Flags().StringVarP(&pID, "projectID", "p", "", "ID of the project to list clusters for.")
+	getClustersCmd.MarkFlagRequired("projectID")
+
+	getClustersCmd.Flags().StringVarP(&seed, "seed", "s", "", "The name of the datacenter to list clusters for.")
 }

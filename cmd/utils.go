@@ -60,10 +60,10 @@ func renderDatacenterList(datacenters []models.Datacenter) {
 		t := table.NewWriter()
 		t.SetOutputMirror(os.Stdout)
 		t.SetStyle(table.StyleBold)
-		t.AppendHeader(table.Row{"Name", "Country"})
+		t.AppendHeader(table.Row{"Name", "Country", "Seed"})
 		rows := make([]table.Row, len(datacenters))
 		for i, dc := range datacenters {
-			rows[i] = table.Row{dc.Metadata.Name, dc.Spec.Country}
+			rows[i] = table.Row{dc.Metadata.Name, dc.Spec.Country, dc.Spec.Seed}
 		}
 		t.AppendRows(rows)
 		t.Render()
@@ -77,10 +77,10 @@ func renderClusterList(clusters []models.Cluster) {
 		t := table.NewWriter()
 		t.SetOutputMirror(os.Stdout)
 		t.SetStyle(table.StyleBold)
-		t.AppendHeader(table.Row{"ID", "Name", "Type", "Version", "Created"})
+		t.AppendHeader(table.Row{"ID", "Name", "Datacenter", "Type", "Version", "Created"})
 		rows := make([]table.Row, len(clusters))
 		for i, c := range clusters {
-			rows[i] = table.Row{c.ID, c.Name, c.Type, c.Status.Version, c.CreationTimestamp}
+			rows[i] = table.Row{c.ID, c.Name, c.Spec.Cloud.DatacenterName, c.Type, c.Status.Version, c.CreationTimestamp}
 		}
 		t.AppendRows(rows)
 		t.Render()
