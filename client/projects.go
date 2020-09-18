@@ -196,3 +196,27 @@ func (c *Client) GetCluster(projectID string, seed string, clusterID string) (mo
 
 	return result, nil
 }
+
+// DeleteCluster deletes a given cluster
+func (c *Client) DeleteCluster(projectID string, seed string, clusterID string) error {
+	req, err := c.newRequest("DELETE", projectPath+"/"+projectID+datacenterSubPath+"/"+seed+clustersSubPath+"/"+clusterID, nil)
+	if err != nil {
+		return err
+	}
+
+	resp, err := c.do(req, nil)
+	if err != nil {
+		return err
+	}
+
+	// StatusCodes 401 and 403 mean empty response and should be treated as such
+	if resp.StatusCode == 401 || resp.StatusCode == 403 {
+		return nil
+	}
+
+	if resp.StatusCode >= 299 {
+		return errors.New("Got non-2xx return code: " + strconv.Itoa(resp.StatusCode))
+	}
+
+	return nil
+}
