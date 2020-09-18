@@ -37,7 +37,7 @@ var getClustersCmd = &cobra.Command{
 			return
 		}
 
-		clusters, err := k8client.ListClusters(pID)
+		clusters, err := k8client.ListClustersForProject(pID)
 		if err != nil {
 			fmt.Println("Error fetching clusters.")
 			return
