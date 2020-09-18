@@ -41,7 +41,7 @@ var getClustersCmd = &cobra.Command{
 
 		var clusters []models.Cluster
 
-		if cmd.Flags().Changed("dc") {
+		if cmd.Flags().Changed("seed") {
 			clusters, err = k8client.ListClustersForProjectAndDatacenter(pID, seed)
 			if err != nil {
 				fmt.Printf("Error fetching clusters: %s", err)
