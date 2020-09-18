@@ -170,3 +170,29 @@ func (c *Client) ListClustersForProjectAndDatacenter(projectID string, seed stri
 
 	return result, nil
 }
+
+// GetCluster fetches cluster
+func (c *Client) GetCluster(projectID string, seed string, clusterID string) (models.Cluster, error) {
+	req, err := c.newRequest("GET", projectPath+"/"+projectID+datacenterSubPath+"/"+seed+clustersSubPath+"/"+clusterID, nil)
+	if err != nil {
+		return models.Cluster{}, err
+	}
+
+	result := models.Cluster{}
+
+	resp, err := c.do(req, &result)
+	if err != nil {
+		return models.Cluster{}, err
+	}
+
+	// StatusCodes 401 and 403 mean empty response and should be treated as such
+	if resp.StatusCode == 401 || resp.StatusCode == 403 {
+		return models.Cluster{}, nil
+	}
+
+	if resp.StatusCode >= 299 {
+		return models.Cluster{}, errors.New("Got non-2xx return code: " + strconv.Itoa(resp.StatusCode))
+	}
+
+	return result, nil
+}
