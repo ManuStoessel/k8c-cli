@@ -37,6 +37,7 @@ func (c *Client) do(req *http.Request, v interface{}) (*http.Response, error) {
 		return nil, err
 	}
 
+	//TODO: handle error responses properly by handling models.ErrorResponse body
 	//fmt.Println(string(body))
 	err = json.Unmarshal(body, &v)
 
