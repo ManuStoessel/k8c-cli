@@ -25,7 +25,7 @@ import (
 
 // deleteClusterCmd represents the cluster command
 var deleteClusterCmd = &cobra.Command{
-	Use:   "cluster [CLUSTER ID]",
+	Use:   "cluster [id]",
 	Short: "Deletes a given cluster",
 	Run: func(cmd *cobra.Command, args []string) {
 		k8client, err := client.NewClient(baseURL, apiToken)

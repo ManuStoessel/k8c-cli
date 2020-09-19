@@ -26,12 +26,11 @@ import (
 
 var pID string
 var seed string
-var clusterID string
 
 // clustersCmd represents the clusters command
 var getClustersCmd = &cobra.Command{
-	Use:   "clusters",
-	Short: "Lists clusters for a given project.",
+	Use:   "clusters [id]",
+	Short: "Lists clusters for a given project (and optional seed datacenter) or fetch a named cluster.",
 	Run: func(cmd *cobra.Command, args []string) {
 		//fmt.Println("clusters called")
 		k8client, err := client.NewClient(baseURL, apiToken)
@@ -43,8 +42,8 @@ var getClustersCmd = &cobra.Command{
 		var clusters []models.Cluster
 
 		if cmd.Flags().Changed("seed") {
-			if cmd.Flags().Changed("clusterID") {
-				cluster, err := k8client.GetCluster(pID, seed, clusterID)
+			if len(args) == 1 {
+				cluster, err := k8client.GetCluster(pID, seed, args[0])
 				if err != nil {
 					fmt.Printf("Error fetching cluster: %s\n", err)
 				}
@@ -76,5 +75,4 @@ func init() {
 	getClustersCmd.MarkFlagRequired("projectID")
 
 	getClustersCmd.Flags().StringVarP(&seed, "seed", "s", "", "Name of the datacenter to list clusters for.")
-	getClustersCmd.Flags().StringVarP((&clusterID), "clusterID", "c", "", "ID of the cluster to fetch")
 }
