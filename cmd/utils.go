@@ -81,6 +81,8 @@ func renderTable(header table.Row, rows []table.Row) {
 	t.SetStyle(table.StyleBold)
 	t.Style().Options.DrawBorder = false
 	t.Style().Options.SeparateColumns = false
+	t.Style().Options.SeparateHeader = false
+	t.Style().Options.SeparateFooter = false
 	t.AppendHeader(header)
 	t.AppendRows(rows)
 	t.Render()
