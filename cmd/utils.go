@@ -40,16 +40,12 @@ func renderProjectList(projects []models.Project) {
 	if jsonOutput {
 		renderJSON(projects)
 	} else {
-		t := table.NewWriter()
-		t.SetOutputMirror(os.Stdout)
-		t.SetStyle(table.StyleBold)
-		t.AppendHeader(table.Row{"ID", "Name", "Clusters", "Status", "Created"})
+		header := table.Row{"ID", "Name", "Clusters", "Status", "Created"}
 		rows := make([]table.Row, len(projects))
 		for i, p := range projects {
 			rows[i] = table.Row{p.ID, p.Name, strconv.FormatInt(p.ClustersNumber, 10), p.Status, p.CreationTimestamp}
 		}
-		t.AppendRows(rows)
-		t.Render()
+		renderTable(header, rows)
 	}
 }
 
@@ -57,16 +53,12 @@ func renderDatacenterList(datacenters []models.Datacenter) {
 	if jsonOutput {
 		renderJSON(datacenters)
 	} else {
-		t := table.NewWriter()
-		t.SetOutputMirror(os.Stdout)
-		t.SetStyle(table.StyleBold)
-		t.AppendHeader(table.Row{"Name", "Country", "Seed"})
+		header := table.Row{"Name", "Country", "Seed"}
 		rows := make([]table.Row, len(datacenters))
 		for i, dc := range datacenters {
 			rows[i] = table.Row{dc.Metadata.Name, dc.Spec.Country, dc.Spec.Seed}
 		}
-		t.AppendRows(rows)
-		t.Render()
+		renderTable(header, rows)
 	}
 }
 
@@ -74,15 +66,22 @@ func renderClusterList(clusters []models.Cluster) {
 	if jsonOutput {
 		renderJSON(clusters)
 	} else {
-		t := table.NewWriter()
-		t.SetOutputMirror(os.Stdout)
-		t.SetStyle(table.StyleBold)
-		t.AppendHeader(table.Row{"ID", "Name", "Datacenter", "Type", "Version", "Created"})
+		header := table.Row{"ID", "Name", "Datacenter", "Type", "Version", "Created"}
 		rows := make([]table.Row, len(clusters))
 		for i, c := range clusters {
 			rows[i] = table.Row{c.ID, c.Name, c.Spec.Cloud.DatacenterName, c.Type, c.Status.Version, c.CreationTimestamp}
 		}
-		t.AppendRows(rows)
-		t.Render()
+		renderTable(header, rows)
 	}
+}
+
+func renderTable(header table.Row, rows []table.Row) {
+	t := table.NewWriter()
+	t.SetOutputMirror(os.Stdout)
+	t.SetStyle(table.StyleBold)
+	t.Style().Options.DrawBorder = false
+	t.Style().Options.SeparateColumns = false
+	t.AppendHeader(header)
+	t.AppendRows(rows)
+	t.Render()
 }
