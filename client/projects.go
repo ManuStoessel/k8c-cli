@@ -21,12 +21,14 @@ import (
 	"strconv"
 
 	"github.com/kubermatic/go-kubermatic/models"
+	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 )
 
 const (
 	projectPath       string = ".." + apiV1Path + "/projects"
 	clustersSubPath   string = "/clusters"
 	datacenterSubPath string = "/dc"
+	kubeconfigSubPath string = "/kubeconfig"
 )
 
 // ListProjects lists all projects a user has permission to see
@@ -219,4 +221,30 @@ func (c *Client) DeleteCluster(projectID string, seed string, clusterID string) 
 	}
 
 	return nil
+}
+
+// GetClusterKubeconfig fetches kubeconfig for a given cluster
+func (c *Client) GetClusterKubeconfig(projectID string, seed string, clusterID string) (clientcmdapi.Config, error) {
+	req, err := c.newRequest("GET", projectPath+"/"+projectID+datacenterSubPath+"/"+seed+clustersSubPath+"/"+clusterID+kubeconfigSubPath, nil)
+	if err != nil {
+		return clientcmdapi.Config{}, err
+	}
+
+	result := clientcmdapi.Config{}
+
+	resp, err := c.do(req, &result)
+	if err != nil {
+		return clientcmdapi.Config{}, err
+	}
+
+	// StatusCodes 401 and 403 mean empty response and should be treated as such
+	if resp.StatusCode == 401 || resp.StatusCode == 403 {
+		return clientcmdapi.Config{}, nil
+	}
+
+	if resp.StatusCode >= 299 {
+		return clientcmdapi.Config{}, errors.New("Got non-2xx return code: " + strconv.Itoa(resp.StatusCode))
+	}
+
+	return result, nil
 }
