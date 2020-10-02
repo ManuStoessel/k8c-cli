@@ -24,6 +24,7 @@ import (
 
 	"github.com/jedib0t/go-pretty/table"
 	"github.com/kubermatic/go-kubermatic/models"
+	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 )
 
 func renderJSON(o interface{}) {
@@ -72,6 +73,15 @@ func renderClusterList(clusters []models.Cluster) {
 			rows[i] = table.Row{c.ID, c.Name, c.Spec.Cloud.DatacenterName, c.Type, c.Status.Version, c.CreationTimestamp}
 		}
 		renderTable(header, rows)
+	}
+}
+
+func renderKubeconfig(kubeconfig clientcmdapi.Config) {
+	if jsonOutput {
+		renderJSON(kubeconfig)
+	} else {
+		fmt.Println("YAML output not yet available.")
+		//TODO: implement outputting kubeconfig as YAML
 	}
 }
 
